@@ -39,8 +39,8 @@ const post_signup = [
         .escape()
         .isLength({ min: 3 })
         .withMessage('Password must be longer than 3 characters.')
-        .isLength({ max: 24 })
-        .withMessage('Password cannot be longer than 24 characters.'),
+        .isLength({ max: 32 })
+        .withMessage('Password cannot be longer than 32 characters.'),
     body("firstName", "User first name must not be empty.")
         .trim()
         .isLength({ min: 1 })

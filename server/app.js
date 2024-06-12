@@ -14,8 +14,10 @@ const LocalJWTStrategy = jwtStrategy;
 const LocalExtractJWT = ExtractJwt;
 import bcrypt from 'bcryptjs';
 
-import indexRouter from './routes/index'
-import signupRouter from './routes/signup'
+import indexRouter from './routes/index';
+import signupRouter from './routes/signup';
+import loginRouter from './routes/login';
+import userModel from './models/user';
 
 var app = express();
 app.set('jwt_secret_password', process.env.JWT_SECURE_KEY);
@@ -39,8 +41,11 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(session({ secret: process.env.SESSION_SECURE_KEY, resave: false, saveUninitialized: true }));
 app.use(passport.session());
 
+const loginRouterHandler = loginRouter(passport);
+
 app.use('/', indexRouter);
-app.use('/signup', signupRouter);
+app.use('/sign-up', signupRouter);
+app.use('/login', loginRouterHandler);
 
 const nameField = 'username';
 const pwdField = 'password';
