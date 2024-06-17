@@ -68,6 +68,27 @@ export default function(passport) {
                     )(req, res, next);
                 }
             })
-        ]
+        ],
+        get_guest: expressAsyncHandler(async (req, res, next) => {
+            const user = {};
+            const nextId = req.app.settings.next_guest_id - 1;
+            req.app.set('next_guest_id', nextId);
+            user._id = (nextId);
+            user.username = 'Guest'
+            user.membership_role = 'guest';
+
+            req.login(
+                user,
+                { session: false },
+                async (error) => {
+                if (error) return next(error);
+    
+                const body = { _id: user._id, username: user.username, role: user.membership_role };
+                const token = jwt.sign({ user: body }, req.app.settings.jwt_secret_password, { expiresIn: '2h' });
+    
+                return res.json({ responseStatus: 'validLogin', token: token });
+                }
+            );
+        })
     }
 }

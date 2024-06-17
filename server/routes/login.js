@@ -6,5 +6,6 @@ export default function(passport) {
 
     const controller = loginController(passport);
     router.post('/', controller.post_login);
+    router.get('/guest', controller.get_guest);
     return router;
 }

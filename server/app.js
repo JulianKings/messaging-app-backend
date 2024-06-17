@@ -13,15 +13,17 @@ import { Strategy as jwtStrategy, ExtractJwt } from 'passport-jwt';
 const LocalJWTStrategy = jwtStrategy;
 const LocalExtractJWT = ExtractJwt;
 import bcrypt from 'bcryptjs';
+import userModel from './models/user';
 
-import indexRouter from './routes/index';
 import signupRouter from './routes/signup';
 import loginRouter from './routes/login';
-import userModel from './models/user';
+import ssoRouter from './routes/sso';
+import { getNextGuestId } from './scripts/dataManager';
 
 var app = express();
 app.set('jwt_secret_password', process.env.JWT_SECURE_KEY);
 app.set('session_secret_password', process.env.SESSION_SECURE_KEY);
+app.set('next_guest_id', 0);
 
 // Set up mongoose connection
 mongoose.set("strictQuery", false);
@@ -42,10 +44,11 @@ app.use(session({ secret: process.env.SESSION_SECURE_KEY, resave: false, saveUni
 app.use(passport.session());
 
 const loginRouterHandler = loginRouter(passport);
+const ssoRouterHandler = ssoRouter(passport);
 
-app.use('/', indexRouter);
 app.use('/sign-up', signupRouter);
 app.use('/login', loginRouterHandler);
+app.use('/sso', passport.authenticate('jwt', { session: false }), ssoRouterHandler);
 
 const nameField = 'username';
 const pwdField = 'password';

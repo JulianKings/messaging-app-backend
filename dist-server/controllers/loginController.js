@@ -127,6 +127,66 @@ function _default(passport) {
       return function (_x, _x2, _x3) {
         return _ref.apply(this, arguments);
       };
-    }())]
+    }())],
+    get_guest: (0, _expressAsyncHandler["default"])( /*#__PURE__*/function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res, next) {
+        var user, nextId;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              user = {};
+              nextId = req.app.settings.next_guest_id - 1;
+              req.app.set('next_guest_id', nextId);
+              user._id = nextId;
+              user.username = 'Guest';
+              user.membership_role = 'guest';
+              req.login(user, {
+                session: false
+              }, /*#__PURE__*/function () {
+                var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(error) {
+                  var body, token;
+                  return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+                    while (1) switch (_context4.prev = _context4.next) {
+                      case 0:
+                        if (!error) {
+                          _context4.next = 2;
+                          break;
+                        }
+                        return _context4.abrupt("return", next(error));
+                      case 2:
+                        body = {
+                          _id: user._id,
+                          username: user.username,
+                          role: user.membership_role
+                        };
+                        token = _jsonwebtoken["default"].sign({
+                          user: body
+                        }, req.app.settings.jwt_secret_password, {
+                          expiresIn: '2h'
+                        });
+                        return _context4.abrupt("return", res.json({
+                          responseStatus: 'validLogin',
+                          token: token
+                        }));
+                      case 5:
+                      case "end":
+                        return _context4.stop();
+                    }
+                  }, _callee4);
+                }));
+                return function (_x11) {
+                  return _ref5.apply(this, arguments);
+                };
+              }());
+            case 7:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5);
+      }));
+      return function (_x8, _x9, _x10) {
+        return _ref4.apply(this, arguments);
+      };
+    }())
   };
 }

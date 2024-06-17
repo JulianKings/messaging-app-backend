@@ -5,12 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = _default;
 var _express = _interopRequireDefault(require("express"));
-var _loginController = _interopRequireDefault(require("../controllers/loginController"));
+var _ssoController = _interopRequireDefault(require("../controllers/ssoController"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 function _default(passport) {
   var router = _express["default"].Router();
-  var controller = (0, _loginController["default"])(passport);
-  router.post('/', controller.post_login);
-  router.get('/guest', controller.get_guest);
+  var controller = (0, _ssoController["default"])(passport);
+  router.get('/', controller.sso_check);
   return router;
 }
