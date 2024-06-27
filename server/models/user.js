@@ -11,7 +11,8 @@ const userSchema = new Schema({
     membership_role: { type: String, required: true },
     timestamp: { type: Date, required: true},
     profile_picture: { type: String, required: false},
-    is_banned: { type: Boolean, required: true}
+    is_banned: { type: Boolean, required: true},
+    last_connection: { type: Date, required: false }
   });
 
 const userModel = mongoose.model("user", userSchema);

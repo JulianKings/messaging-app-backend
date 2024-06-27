@@ -7,28 +7,12 @@ exports["default"] = void 0;
 var _mongoose = _interopRequireDefault(require("mongoose"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 var Schema = _mongoose["default"].Schema;
-var userSchema = new Schema({
-  username: {
+var groupSchema = new Schema({
+  name: {
     type: String,
     required: true
   },
-  password: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true
-  },
-  first_name: {
-    type: String,
-    required: true
-  },
-  last_name: {
-    type: String,
-    required: true
-  },
-  membership_role: {
+  description: {
     type: String,
     required: true
   },
@@ -40,14 +24,10 @@ var userSchema = new Schema({
     type: String,
     required: false
   },
-  is_banned: {
+  "private": {
     type: Boolean,
     required: true
-  },
-  last_connection: {
-    type: Date,
-    required: false
   }
 });
-var userModel = _mongoose["default"].model("user", userSchema);
-var _default = exports["default"] = userModel;
+var communityModel = _mongoose["default"].model("group", groupSchema);
+var _default = exports["default"] = communityModel;

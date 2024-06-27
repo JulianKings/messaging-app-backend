@@ -78,7 +78,8 @@ const post_signup = [
             membership_role: 'user',
             profile_picture: 'none',
             timestamp: (new Date()),
-            is_banned: false
+            is_banned: false,
+            last_connection: (new Date())
         })
 
         if(!errors.isEmpty())

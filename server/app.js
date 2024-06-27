@@ -18,7 +18,6 @@ import userModel from './models/user';
 import signupRouter from './routes/signup';
 import loginRouter from './routes/login';
 import ssoRouter from './routes/sso';
-import { getNextGuestId } from './scripts/dataManager';
 
 var app = express();
 app.set('jwt_secret_password', process.env.JWT_SECURE_KEY);

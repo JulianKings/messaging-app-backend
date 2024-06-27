@@ -140,7 +140,7 @@ function _default(passport) {
               user._id = nextId;
               user.username = 'Guest';
               user.membership_role = 'guest';
-              req.login(user, {
+              user.profile_picture = '', req.login(user, {
                 session: false
               }, /*#__PURE__*/function () {
                 var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(error) {
@@ -157,7 +157,8 @@ function _default(passport) {
                         body = {
                           _id: user._id,
                           username: user.username,
-                          role: user.membership_role
+                          role: user.membership_role,
+                          picture: user.profile_picture
                         };
                         token = _jsonwebtoken["default"].sign({
                           user: body
