@@ -8,5 +8,6 @@ export default function(passport) {
     router.get('/', controller.sso_check);
     router.get('/community', controller.get_communities);
     router.get('/friends', controller.get_friends);
+    router.post('/add_community', controller.post_community);
     return router;
 }

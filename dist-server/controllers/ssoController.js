@@ -10,6 +10,7 @@ var _expressValidator = require("express-validator");
 var _user = _interopRequireDefault(require("../models/user"));
 var _groupMembers = _interopRequireDefault(require("../models/groupMembers"));
 var _userRelationships = _interopRequireDefault(require("../models/userRelationships"));
+var _group = _interopRequireDefault(require("../models/group"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
@@ -18,7 +19,7 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _default(passport) {
-  return _defineProperty(_defineProperty({
+  return _defineProperty(_defineProperty(_defineProperty({
     sso_check: (0, _expressAsyncHandler["default"])( /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res, next) {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -117,5 +118,100 @@ function _default(passport) {
     return function (_x10, _x11, _x12) {
       return _ref4.apply(this, arguments);
     };
-  }()));
+  }())), "post_community", [
+  // Validate and sanitize fields.
+  (0, _expressValidator.body)("communityName", "Community name must not be empty.").trim().isLength({
+    min: 1
+  }).escape().isLength({
+    min: 3
+  }).withMessage('Community name must have at least 3 characters.').isLength({
+    max: 48
+  }).withMessage('Community name cannot be longer than 48 characters.').custom( /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(value) {
+      var comm;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.next = 2;
+            return _group["default"].findOne({
+              name: value
+            });
+          case 2:
+            comm = _context5.sent;
+            if (!comm) {
+              _context5.next = 5;
+              break;
+            }
+            throw new Error('Community name already in use');
+          case 5:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5);
+    }));
+    return function (_x13) {
+      return _ref5.apply(this, arguments);
+    };
+  }()), (0, _expressValidator.body)("communityDescription", "Community description name must not be empty.").trim().isLength({
+    min: 1
+  }).escape().isLength({
+    min: 3
+  }).withMessage('Community description must be longer than 3 characters.').isLength({
+    max: 128
+  }).withMessage('Community description cannot be longer than 128 characters.'), (0, _expressValidator.body)("communityPicture", "Error on community picture.").trim().escape(), (0, _expressValidator.body)("communityStatus", "Community status must not be empty.").trim().isLength({
+    min: 1
+  }).escape(), (0, _expressAsyncHandler["default"])( /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res, next) {
+      var errors, community, responseObject, result, owner, _responseObject;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) switch (_context6.prev = _context6.next) {
+          case 0:
+            errors = (0, _expressValidator.validationResult)(req);
+            community = new _group["default"]({
+              name: req.body.communityName,
+              description: req.body.communityDescription,
+              timestamp: new Date(),
+              profile_picture: req.body.communityPicture,
+              "private": req.body.communityStatus === 'private'
+            });
+            if (errors.isEmpty()) {
+              _context6.next = 7;
+              break;
+            }
+            // send response with errors
+            responseObject = {
+              responseStatus: 'invalidAppendCommunity',
+              errors: errors.array()
+            };
+            res.json(responseObject);
+            _context6.next = 15;
+            break;
+          case 7:
+            _context6.next = 9;
+            return community.save();
+          case 9:
+            result = _context6.sent;
+            owner = new _groupMembers["default"]({
+              user: req.user._id,
+              group: result._id,
+              role: 'owner'
+            });
+            _context6.next = 13;
+            return owner.save();
+          case 13:
+            // send successful response
+            _responseObject = {
+              responseStatus: 'validAppendCommunity'
+            };
+            res.json(_responseObject);
+          case 15:
+          case "end":
+            return _context6.stop();
+        }
+      }, _callee6);
+    }));
+    return function (_x14, _x15, _x16) {
+      return _ref6.apply(this, arguments);
+    };
+  }())]);
 }

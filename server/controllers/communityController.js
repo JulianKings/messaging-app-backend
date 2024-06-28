@@ -11,16 +11,25 @@ const get_popular_communities = expressAsyncHandler(async (req, res, next) => {
             'memberCount': { "$sum": 1 }
         }},
 
+        {
+            $set: {
+                group: '$_id',
+                _id: '$$REMOVE'
+              }
+        },
+
         { "$sort": { "memberCount": -1}},
 
         { "$limit": 10 }
     ]).exec();
 
-    const builtCommunities = await memberModel.populate(popularCommunities, { path: 'group'});
+
+
+    const result = await communityModel.populate(popularCommunities, { path: 'group'});
 
     const responseObject = {
         responseStatus: 'validRequest',
-        communities: builtCommunities
+        communities: result
     }
 
     res.json(responseObject);

@@ -15,7 +15,7 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 var get_popular_communities = exports.get_popular_communities = (0, _expressAsyncHandler["default"])( /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res, next) {
-    var popularCommunities, builtCommunities, responseObject;
+    var popularCommunities, result, responseObject;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -28,6 +28,11 @@ var get_popular_communities = exports.get_popular_communities = (0, _expressAsyn
               }
             }
           }, {
+            $set: {
+              group: '$_id',
+              _id: '$$REMOVE'
+            }
+          }, {
             "$sort": {
               "memberCount": -1
             }
@@ -37,14 +42,14 @@ var get_popular_communities = exports.get_popular_communities = (0, _expressAsyn
         case 2:
           popularCommunities = _context.sent;
           _context.next = 5;
-          return _groupMembers["default"].populate(popularCommunities, {
+          return _group["default"].populate(popularCommunities, {
             path: 'group'
           });
         case 5:
-          builtCommunities = _context.sent;
+          result = _context.sent;
           responseObject = {
             responseStatus: 'validRequest',
-            communities: builtCommunities
+            communities: result
           };
           res.json(responseObject);
         case 8:
