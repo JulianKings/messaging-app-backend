@@ -11,5 +11,7 @@ function _default(passport) {
   var router = _express["default"].Router();
   var controller = (0, _ssoController["default"])(passport);
   router.get('/', controller.sso_check);
+  router.get('/community', controller.get_communities);
+  router.get('/friends', controller.get_friends);
   return router;
 }

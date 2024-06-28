@@ -55,7 +55,13 @@ export default function(passport) {
                                 async (error) => {
                                 if (error) return next(error);
                     
-                                const body = { _id: user._id, username: user.username, role: user.membership_role };
+                                const body = { ...user._doc };
+                                body.password = undefined;
+                                body.__v = undefined;
+                                body.membership_role = undefined;
+                                body.profile_picture = undefined;
+                                body.role = user.membership_role;
+                                body.picture = user.profile_picture;
                                 const token = jwt.sign({ user: body }, req.app.settings.jwt_secret_password, { expiresIn: '2h' });
                     
                                 return res.json({ responseStatus: 'validLogin', token: token });

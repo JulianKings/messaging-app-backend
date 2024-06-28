@@ -6,6 +6,7 @@ export default function(passport) {
 
     const controller = ssoController(passport);
     router.get('/', controller.sso_check);
-
+    router.get('/community', controller.get_communities);
+    router.get('/friends', controller.get_friends);
     return router;
 }

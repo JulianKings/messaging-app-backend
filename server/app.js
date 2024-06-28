@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import createError from 'http-errors';
 import 'dotenv/config'
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -18,6 +19,7 @@ import userModel from './models/user';
 import signupRouter from './routes/signup';
 import loginRouter from './routes/login';
 import ssoRouter from './routes/sso';
+import communityRouter from './routes/community';
 
 var app = express();
 app.set('jwt_secret_password', process.env.JWT_SECURE_KEY);
@@ -48,6 +50,7 @@ const ssoRouterHandler = ssoRouter(passport);
 app.use('/sign-up', signupRouter);
 app.use('/login', loginRouterHandler);
 app.use('/sso', passport.authenticate('jwt', { session: false }), ssoRouterHandler);
+app.use('/community', communityRouter);
 
 const nameField = 'username';
 const pwdField = 'password';
@@ -114,7 +117,6 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
   console.log(err);
 });
 
